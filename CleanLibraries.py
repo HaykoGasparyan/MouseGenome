@@ -174,7 +174,7 @@ def write_file(content, path):
     
     if not os.path.exists('/'.join(path.split('/')[:-1])):
         os.makedirs('/'.join(path.split('/')[:-1]))
-  
+
     with open(path, 'w') as f:
         for line in content:
             f.write(line)
