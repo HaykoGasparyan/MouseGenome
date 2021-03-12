@@ -7,3 +7,6 @@
 
 
 4. Use PlotStatistics.py to get plots of basic statistics of your libraries. It will plot Depth distribution, average GC% content distribution and average read length distribution.You have to pass folder path as an argument.
+
+
+Depending on your machine and size of data, this scripts may take some time, please be patient :)
