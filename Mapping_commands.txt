@@ -1,0 +1,32 @@
+import os
+
+folder_path = '/home/hayk/tools/Mapping_GSE60361'
+picard_path = '/home/hayk/picard/build/libs'
+ext = '.RNA_Metrics'
+
+i=0
+for path in os.listdir('/home/hayk/tools/GSE60361'):
+    if('.fastq' in path):
+        !STAR --runThreadN 16 \
+              --genomeDir GenCode/indexes/chr10 \
+              --readFilesIn /home/hayk/tools/GSE60361/$path \
+              --quantMode GeneCounts --outFileNamePrefix /home/hayk/tools/Mapping_GSE60361/$path \
+              --sjdbGTFfile /home/hayk/tools/GenCode/gencode.vM26.primary_assembly.annotation.gtf \
+              --sjdbOverhang 51 
+        
+    print('\n ---------------------', i, '---------------------- \n')
+    i+=1
+    
+
+for name in os.listdir(folder_path):
+    if('.out.sam' in name.lower()):
+        lib_name = name.split('.')[0]
+        !touch /home/hayk/tools/Mapping_GSE60361/$lib_name$ext
+        !java -jar /home/hayk/picard/build/libs/picard.jar CollectRnaSeqMetrics \
+        I=$folder_path/$name \
+        O=/home/hayk/tools/Mapping_GSE60361/$lib_name$ext \
+        REF_FLAT=/home/hayk/tools/GenCode/annotation_refflat.txt \
+        STRAND=FIRST_READ_TRANSCRIPTION_STRAND
+
+
+
