@@ -1,4 +1,4 @@
-## MouseGenome
+### MouseGenome
 
 
 1. Use ClearLibraries.py script to remove bad libraries and reads. It will create new directory ('Cleaned') in the same folder which will contain only needed things. You have to pass your folder (.fastq files are in) path as an argument
