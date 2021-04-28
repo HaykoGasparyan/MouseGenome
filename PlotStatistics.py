@@ -83,7 +83,7 @@ def get_mapping_statistics(folder_path):
 
     for name in os.listdir(folder_path):
         if('.final.out' in name):
-            w = open(folder_path + name)
+            w = open(folder_path + '/' + name)
             lines = w.readlines()
             unmapped_1 = float(lines[-4].split('|')[1][1:-2])
             unmapped_2 = float(lines[-6].split('|')[1][1:-2])
@@ -97,14 +97,17 @@ def get_mapping_statistics(folder_path):
             
             
         if('.RNA_Metrics' in name):
-            w = open(folder_path + name)
+            w = open(folder_path + '/' + name)
             lines = np.array(w.readlines())
             df_positions.loc[name.split('.')[0]] = get_values(lines)
-            df_mrna_bases.loc[name.split('.')[0]] = lines[7].split('\t')[21]
+            if(len(lines) != 113):
+            	print(len(lines))
+            	continue
+            df_mrna_bases.loc[name.split('.')[0]] = float(lines[7].split('\t')[21])
             j += 1
         
         if('fastqReadsPerGene' in name):
-            gene_counts = pd.read_table(folder_path + name)
+            gene_counts = pd.read_table(folder_path + '/' + name)
             gene_counts.columns = ['GeneID', 'Count1', 'Count2', 'Count3']
             gene_counts = gene_counts.iloc[4:, :2]
             gene_counts.columns = ['GeneID', name.split('.')[0]]
@@ -114,6 +117,7 @@ def get_mapping_statistics(folder_path):
             except:
                 count_table = gene_counts
                 
+    count_table.to_csv('CountTable.csv')
     return df_positions, count_table, df_read_depths, df_unmapped, df_mrna_bases
 
 
@@ -139,23 +143,28 @@ def plot_mapping_statistics(folder_path):
             genes.append(count_table[col][count_table[col] != 0].shape[0])
             input_reads.append(read_depths.loc[col]['ReadDepths'])
             unmapped.append(unmapped_depths.loc[col]['Unmapped'])
-            
+           
+
     plt.figure(figsize=(15,10))
-    plt.scatter(input_reads, genes)
+    g = sns.scatterplot(input_reads, genes)
     plt.title('Number of Genes per cell', fontsize=20)
     plt.xlabel('Number of input reads (million)', fontsize=20)
     plt.ylabel('Number of expressed genes', fontsize=20)
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)
+    xlabels = [x for x in g.get_xticks()/1000000]
+    g.set_xticklabels(xlabels)
     plt.show()
     
     plt.figure(figsize=(15,10))
-    plt.scatter(input_reads, unmapped)
+    g = sns.scatterplot(input_reads, unmapped)
     plt.title('Fraction of unmapped reads per library', fontsize=20)
     plt.xlabel('Number of input reads (million)', fontsize=20)
     plt.ylabel('% Unmapped Reads', fontsize=20)
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)
+    xlabels = [x for x in g.get_xticks()/1000000]
+    g.set_xticklabels(xlabels)
     plt.show()
     
     plt.figure(figsize=(15,10))

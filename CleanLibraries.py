@@ -144,14 +144,14 @@ def remove_reads(file_original, file_reads):
         n_count = ns[i]
         length = lengths[i]
         
-        if(length <= read_len_threshold):
+        #if(length <= read_len_threshold):
+        #    indexes.append(i)
+        #elif(length < l1):
+        #    indexes.append(i)
+        if(GC < 47 or GC > 51):
             indexes.append(i)
-        elif(length < l1):
-            indexes.append(i)
-        elif(GC < gc1 or GC > gc2):
-            indexes.append(i)
-        elif(n_count >= N_percent_threshold):
-            indexes.append(i)
+        #elif(n_count >= N_percent_threshold):
+        #   indexes.append(i)
         else:
             new_gcs.append(GC)
             new_lengths.append(length)
@@ -174,7 +174,7 @@ def write_file(content, path):
     
     if not os.path.exists('/'.join(path.split('/')[:-1])):
         os.makedirs('/'.join(path.split('/')[:-1]))
-  
+
     with open(path, 'w') as f:
         for line in content:
             f.write(line)
